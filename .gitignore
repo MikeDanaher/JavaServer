@@ -1,3 +1,4 @@
 .idea/
 JavaServer.iml
 out/
+*.class
