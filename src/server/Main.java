@@ -11,22 +11,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        int portNumber = 5000;
+        ArgsParser argsParser = new ArgsParser(args);
+        printServerSetup(argsParser.getPort(), argsParser.getDirectory());
 
-        System.out.println("I'm a server!");
-
-        for (int i = 0; i < args.length; i += 2) {
-            if (args[i].equals("-p")) {
-                portNumber = Integer.parseInt(args[i + 1]);
-                System.out.println("Listening on port: " + args[i + 1]);
-            } else if (args[i].equals("-d")) {
-                System.out.println("Default directory is: " + args[i + 1]);
-            } else {
-                System.out.println("Unrecognized argument: " + args[i] + " " + args[i + 1]);
-            }
-        }
-
-        ServerSocket listener = new ServerSocket(portNumber);
+        ServerSocket listener = new ServerSocket(argsParser.getPort());
         for (;;) {
             Socket clientSocket = listener.accept();
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -50,5 +38,10 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static void printServerSetup(int port, String directory) {
+        System.out.println("Starting server\nConnected on port: "
+                + port + "\nDefault directory is: " + directory);
     }
 }
