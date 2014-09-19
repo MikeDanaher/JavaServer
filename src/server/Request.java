@@ -1,9 +1,6 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Request {
     private BufferedReader reader;
@@ -12,15 +9,7 @@ public class Request {
         this.reader = new BufferedReader(new InputStreamReader(clientInputStream));
     }
 
-    public String getRequest() throws IOException {
-        String request = "";
-        while (true) {
-            String inputLine = reader.readLine();
-            request += inputLine + "\r\n";
-            if(inputLine.equals("")) {
-                break;
-            }
-        }
-        return request;
+    public String getRequestLine() throws IOException {
+        return reader.readLine();
     }
 }

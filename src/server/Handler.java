@@ -14,7 +14,7 @@ public class Handler {
 
     public void handleRequest() {
         try {
-            String request = new Request(client.getInputStream()).getRequest();
+            String request = new Request(client.getInputStream()).getRequestLine();
             Response response = new Response(client.getOutputStream(), request);
             response.write();
             client.close();
