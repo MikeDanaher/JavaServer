@@ -2,3 +2,4 @@
 JavaServer.iml
 out/
 *.class
+.DS_Store
