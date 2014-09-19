@@ -6,8 +6,8 @@ import java.net.Socket;
 
 public class Server {
     private String directory;
-    private Socket client;
     private ServerSocket serverSocket;
+    public  Socket client;
 
     public Server(int port, String directory) throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -18,32 +18,19 @@ public class Server {
         while(!serverSocket.isClosed()) {
             try {
                 client = serverSocket.accept();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                String request = new Request(client.getInputStream()).getRequest();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), "UTF-8"));
-                respond(reader, writer);
+                respond(request, writer);
             } catch (IOException e) {
                 System.err.println("Caught IOException: " + e.getMessage());
             }
         }
     }
 
-    private void respond(BufferedReader reader, BufferedWriter writer) throws IOException {
-        writer.write("HTTP/1.1 200\r\n");
-        writer.write("Content-Type: text/plain\r\n");
-        writer.write("Connection: close\r\n");
-        writer.write("\r\n");
-
-        String inputLine;
-
-        while (!client.isClosed()) {
-            inputLine = reader.readLine();
-            writer.write(inputLine + "\r\n");
-
-            if (inputLine.length() == 0) {
-                writer.close();
-                reader.close();
-                client.close();
-            }
-        }
+    private void respond(String request, BufferedWriter writer) throws IOException {
+        String responseHeader = "HTTP/1.1 200\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n";
+        writer.write(responseHeader + request);
+        writer.close();
+        client.close();
     }
 }
