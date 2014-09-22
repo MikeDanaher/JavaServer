@@ -4,19 +4,22 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Handler {
-    public Socket client;
-    public String baseDirectory;
+    private Socket client;
+    private IO io;
+    private String baseDirectory;
 
     public Handler(Socket client, String directory) {
         this.client = client;
         this.baseDirectory = directory;
+        this.io = new IO();
     }
 
     public void handleRequest() {
         try {
-            String request = new Request(client.getInputStream()).getRequestLine();
-            Response response = new Response(client.getOutputStream(), request);
-            response.write();
+            String fullRequest = io.getFullRequest(client.getInputStream());
+            Request request = new Request(fullRequest).parseFullRequest();
+            Response response = new Response(request, baseDirectory);
+            io.writeFullResponse(response.buildResponse(), client.getOutputStream());
             client.close();
         } catch (IOException e) {
             e.printStackTrace();

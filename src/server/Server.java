@@ -20,6 +20,7 @@ public class Server {
                 Handler handler = new Handler(client, directory);
                 handler.handleRequest();
             } catch (IOException e) {
+                System.err.print(e.getMessage());
                 e.printStackTrace();
             }
         }
