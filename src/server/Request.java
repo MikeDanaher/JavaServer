@@ -23,8 +23,8 @@ public class Request {
     }
 
     public Request parseFullRequest() {
-        String[] requestLines = fullRequest.split("\r\n");
-        parseRequestLine(requestLines[0]);
+        String[] request = fullRequest.split("\r\n");
+        parseRequestLine(request[0]);
         return this;
     }
 

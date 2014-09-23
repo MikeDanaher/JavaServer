@@ -7,10 +7,15 @@ public class ServerIO {
     public String getFullRequest(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         StringBuilder fullRequest = new StringBuilder();
+        int nextChar;
 
-        do {
-            fullRequest.append((char)reader.read());
-        } while (reader.ready());
+        while ((nextChar = reader.read()) != -1) {
+            fullRequest.append((char)nextChar);
+
+            if (!reader.ready()) {
+                break;
+            }
+        }
 
         return fullRequest.toString();
     }
@@ -18,6 +23,7 @@ public class ServerIO {
     public void writeFullResponse(byte[] response, OutputStream output) throws IOException {
         DataOutputStream writer = new DataOutputStream(output);
         writer.write(response, 0, response.length);
+        writer.flush();
         writer.close();
     }
 }

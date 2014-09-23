@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
 
-    private String FULL_GET_REQUEST = "GET /test HTTP/1.1\r\nContent-Type: text/plain\r\n\r\n";
+    private String FULL_GET_REQUEST = "GET /test HTTP/1.1";
     private Request request;
 
     @Before
