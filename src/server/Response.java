@@ -1,6 +1,7 @@
 package server;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -16,19 +17,19 @@ public class Response {
         this.baseDirectory = baseDirectory;
     }
 
-    public byte[] buildResponse() throws IOException {
-        boolean resourceExists = new File(baseDirectory + request.getURI()).isFile();
-
-        if (resourceExists) {
-            body = getBody(request);
-            statusLine = ("HTTP/1.1 " + getStatusCode(request) + "\r\n").getBytes();
-        } else {
-            body = get404Body();
-            statusLine = ("HTTP/1.1 404 Not Found\r\n").getBytes();
+    public void handleRequest() throws IOException {
+        String method = request.getMethod();
+        System.out.println("Method: " + method);
+        switch (method) {
+            case "GET":
+                handleGetRequest();
+                break;
+            default:
+                handleInvalidRequest();
         }
+    }
 
-        headers = ("Content-Type: text/plain\r\nConnection: close\r\n\r\n").getBytes();
-
+    public byte[] buildResponse() throws IOException {
         byte[] combined = new byte[statusLine.length + headers.length + body.length];
 
         System.arraycopy(statusLine, 0, combined, 0, statusLine.length);
@@ -38,25 +39,46 @@ public class Response {
         return combined;
     }
 
-    private String getStatusCode(Request request) {
-        String method = request.getMethod();
-        switch (method) {
-            case "GET":
-                return "200 OK";
-            case "POST":
-                return "200 OK";
-            case "PUT":
-                return "200 OK";
-            default:
-                return "404 Not Found";
-        }
-    }
-
-    private byte[] getBody(Request request) throws IOException {
+    private byte[] readFileBody(Request request) throws IOException {
         return Files.readAllBytes(Paths.get(baseDirectory + request.getURI()));
     }
 
     private byte[] get404Body() {
         return "404 Page not found".getBytes();
+    }
+
+    private void handleInvalidRequest() {
+        statusLine = "HTTP/1.1 405 Method not allowed".getBytes();
+        headers = "".getBytes();
+        body = "".getBytes();
+    }
+
+    private void handleGetRequest() throws IOException {
+        headers = ("Content-Type: text/html;charset=UTF-8\r\n\r\n").getBytes();
+        File expectedResource = new File(baseDirectory + request.getURI());
+        String bodyContent = "";
+
+        if (expectedResource.isDirectory()) {
+            for (File fileEntry : expectedResource.listFiles()) {
+                bodyContent += buildLink(fileEntry.getName());
+            }
+            bodyContent = "<html><head><title>Index</title></head><body>" + bodyContent + "</body></html>";
+            body = bodyContent.getBytes();
+            statusLine = ("HTTP/1.1 200 OK\r\n").getBytes();
+        } else if (expectedResource.isFile()) {
+            body = readFileBody(request);
+            statusLine = ("HTTP/1.1 200 OK\r\n").getBytes();
+        } else {
+            body = get404Body();
+            statusLine = ("HTTP/1.1 404 Not Found\r\n").getBytes();
+        }
+    }
+
+    private String buildLink(String fileName) {
+        String href = "<a href=/";
+        String closeHref = ">";
+        String closeTag = "</a>";
+
+        return href + fileName + closeHref + fileName + closeTag;
     }
 }

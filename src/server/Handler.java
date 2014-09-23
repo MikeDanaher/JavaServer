@@ -21,8 +21,8 @@ public class Handler {
             if(!fullRequest.equals("")) {
                 System.out.println("\n\n" + fullRequest);
                 Request request = new Request(fullRequest).parseFullRequest();
-
                 Response response = new Response(request, baseDirectory);
+                response.handleRequest();
                 io.writeFullResponse(response.buildResponse(), client.getOutputStream());
             }
 
