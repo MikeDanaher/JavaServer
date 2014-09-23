@@ -7,7 +7,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ArgsParser argsParser = new ArgsParser(args);
         printServerSetup(argsParser.getPort(), argsParser.getDirectory());
-
         Server server = new Server(argsParser.getPort(), argsParser.getDirectory());
         server.start();
     }

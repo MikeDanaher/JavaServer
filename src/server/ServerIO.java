@@ -2,17 +2,17 @@ package server;
 
 import java.io.*;
 
-public class IO {
+public class ServerIO {
 
     public String getFullRequest(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        String fullRequest = "";
+        StringBuilder fullRequest = new StringBuilder();
 
         do {
-            fullRequest += (char) reader.read();
+            fullRequest.append((char)reader.read());
         } while (reader.ready());
 
-        return fullRequest;
+        return fullRequest.toString();
     }
 
     public void writeFullResponse(byte[] response, OutputStream output) throws IOException {

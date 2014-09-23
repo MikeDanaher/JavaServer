@@ -7,15 +7,15 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class IOTest {
+public class ServerIOTest {
 
     public String REQUEST  = "GET /public HTTP/1.1\r\nContent-Type: text/plain\r\n\r\n";
     public String RESPONSE = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
-    public IO io;
+    public ServerIO io;
 
     @Before
     public void createIO() {
-        io = new IO();
+        io = new ServerIO();
     }
 
     @Test

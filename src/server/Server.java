@@ -17,8 +17,10 @@ public class Server {
         while(!serverSocket.isClosed()) {
             try {
                 Socket client = serverSocket.accept();
+                System.out.println("Client connected: " + client);
                 Handler handler = new Handler(client, directory);
                 handler.handleRequest();
+                System.out.println("Client closed");
             } catch (IOException e) {
                 System.err.print(e.getMessage());
                 e.printStackTrace();
