@@ -3,12 +3,12 @@ package server;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Handler {
+public class Worker {
     private Socket client;
     private ServerIO io;
     private String baseDirectory;
 
-    public Handler(Socket client, String directory) {
+    public Worker(Socket client, String directory) {
         this.client = client;
         this.baseDirectory = directory;
         this.io = new ServerIO();

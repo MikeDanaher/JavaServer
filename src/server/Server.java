@@ -18,8 +18,8 @@ public class Server {
             try {
                 Socket client = serverSocket.accept();
                 System.out.println("Client Connected: " + client);
-                Handler handler = new Handler(client, directory);
-                handler.handleRequest();
+                Worker worker = new Worker(client, directory);
+                worker.handleRequest();
                 System.out.println("\nClient Closed");
             } catch (IOException e) {
                 System.err.print(e.getMessage());
