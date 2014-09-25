@@ -4,7 +4,7 @@ import java.io.*;
 
 public class ServerIO {
 
-    public String getFullRequest(InputStream input) throws IOException {
+    public String readRequest(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         StringBuilder fullRequest = new StringBuilder();
         int nextChar;
@@ -20,7 +20,7 @@ public class ServerIO {
         return fullRequest.toString();
     }
 
-    public void writeFullResponse(byte[] response, OutputStream output) throws IOException {
+    public void writeResponse(byte[] response, OutputStream output) throws IOException {
         DataOutputStream writer = new DataOutputStream(output);
         writer.write(response, 0, response.length);
         writer.flush();

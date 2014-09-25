@@ -6,7 +6,7 @@ public class HandlerFactory {
     Handler handler;
 
     public Handler build(Request request) {
-        String method = request.getMethod();
+        String method = request.method;
 
         switch (method) {
             case "DELETE":

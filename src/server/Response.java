@@ -24,8 +24,8 @@ public class Response {
         this.baseDirectory = baseDirectory;
     }
 
-    public void handleRequest() throws IOException {
-        String method = request.getMethod();
+    public Response handleRequest() throws IOException {
+        String method = request.method;
         System.out.println("Method: " + method);
         switch (method) {
             case "GET":
@@ -53,10 +53,11 @@ public class Response {
                 handleInvalidRequest();
         }
         buildStatusLine();
+        return this;
     }
 
     private String buildStatusLine() {
-        return request.getVersion() + " " + statusCode + " " + STATUS_MESSAGES.get(statusCode);
+        return request.version + " " + statusCode + " " + STATUS_MESSAGES.get(statusCode);
     }
 
     public byte[] buildResponse() throws IOException {
@@ -82,7 +83,7 @@ public class Response {
     }
 
     private byte[] readFileBody(Request request) throws IOException {
-        return Files.readAllBytes(Paths.get(baseDirectory + request.getURI()));
+        return Files.readAllBytes(Paths.get(baseDirectory + request.path));
     }
 
     private byte[] get404Body() {
@@ -99,11 +100,11 @@ public class Response {
     }
 
     private void handleGetRequest() throws IOException {
-        File expectedResource = new File(baseDirectory + request.getURI());
+        File expectedResource = new File(baseDirectory + request.path);
         String bodyContent = "";
 
         if (expectedResource.isDirectory()) {
-            if (request.getURI().equals("/form")) {
+            if (request.path.equals("/form")) {
                 statusCode = "200";
                 responseBody = "".getBytes();
                 setHeader("Content-Type", "text/html;charset=UTF-8");
@@ -145,11 +146,11 @@ public class Response {
     private void handlePatchRequest() {
         statusCode = "204";
         setHeader("Content-Type", "text/plain");
-        responseBody = request.getBody().toString().getBytes();
+        responseBody = request.body.toString().getBytes();
     }
 
     private void handleDeleteRequest() throws IOException {
-        Files.delete(Paths.get(baseDirectory + request.getURI()));
+        Files.delete(Paths.get(baseDirectory + request.path));
         statusCode = "200";
         setHeader("Content-Type", "text/plain");
         responseBody = "".getBytes();
@@ -157,9 +158,9 @@ public class Response {
 
     private void handlePostRequest() throws IOException {
 
-        if (requestIsAllowed(request.getURI())) {
+        if (requestIsAllowed(request.path)) {
             String content = buildPostContent();
-            File file = new File(baseDirectory + request.getURI());
+            File file = new File(baseDirectory + request.path);
             file.createNewFile();
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             writer.print(content);
@@ -178,7 +179,7 @@ public class Response {
 
     private String buildPostContent() {
         String content = "";
-        Iterator it = request.getBody().entrySet().iterator();
+        Iterator it = request.body.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry) it.next();
             content += pairs.getKey() + " = " + pairs.getValue() + "\r\n";

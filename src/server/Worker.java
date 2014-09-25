@@ -16,19 +16,25 @@ public class Worker {
 
     public void handleRequest() {
         try {
-            String fullRequest = io.getFullRequest(client.getInputStream());
+            String requestContent = io.readRequest(client.getInputStream());
 
-            if(!fullRequest.equals("")) {
-                System.out.println("\n\n" + fullRequest);
-                Request request = new Request(fullRequest).parseFullRequest();
-                Response response = new Response(request, baseDirectory);
-                response.handleRequest();
-                io.writeFullResponse(response.buildResponse(), client.getOutputStream());
+            if(isValidRequest(requestContent)) {
+                respond(requestContent);
             }
 
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void respond(String requestContent) throws IOException {
+        Request request = new Request(requestContent).parseFullRequest();
+        Response response = new Response(request, baseDirectory).handleRequest();
+        io.writeResponse(response.buildResponse(), client.getOutputStream());
+    }
+
+    private boolean isValidRequest(String requestContent) {
+        return requestContent.equals("");
     }
 }

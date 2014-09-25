@@ -22,19 +22,19 @@ public class ServerIOTest {
     @Test
     public void testReadValidRequest() throws IOException {
         MockClientStreams mockInput = new MockClientStreams(REQUEST.getBytes());
-         assertEquals(REQUEST, io.getFullRequest(mockInput.getInputStream()));
+         assertEquals(REQUEST, io.readRequest(mockInput.getInputStream()));
     }
 
     @Test
     public void testWriteFullResponse() throws IOException {
         MockClientStreams mockOutput = new MockClientStreams(REQUEST.getBytes());
-        io.writeFullResponse(RESPONSE.getBytes(), mockOutput.getOutputStream());
+        io.writeResponse(RESPONSE.getBytes(), mockOutput.getOutputStream());
         assertEquals(mockOutput.getOutputStream().toString(), RESPONSE);
     }
 
     @Test
     public void testReadEmptyRequest() throws IOException {
         MockClientStreams mockInput = new MockClientStreams(EMPTY_REQUEST.getBytes());
-        assertEquals(EMPTY_REQUEST, io.getFullRequest(mockInput.getInputStream()));
+        assertEquals(EMPTY_REQUEST, io.readRequest(mockInput.getInputStream()));
     }
 }

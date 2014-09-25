@@ -5,39 +5,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Request {
-    private List<String>            request;
-    private String                  requestMethod;
-    private String                  requestURI;
-    private String                  requestVersion;
-    private HashMap<String, String> requestHeaders = new HashMap<>();
-    private HashMap<String, String> requestBody = new HashMap<>();
+    private List<String>           fullRequest;
+    public String                  method;
+    public String                  path;
+    public String                  version;
+    public HashMap<String, String> headers = new HashMap<>();
+    public HashMap<String, String> body = new HashMap<>();
 
     public Request(String fullRequest) {
-        request = Arrays.asList(fullRequest.split("\r\n"));
-    }
-
-    public String getMethod() {
-        return requestMethod;
-    }
-
-    public String getURI() {
-        return requestURI;
-    }
-
-    public String getVersion() {
-        return requestVersion;
-    }
-
-    public HashMap<String, String> getHeaders() {
-        return requestHeaders;
-    }
-
-    public HashMap<String, String> getBody() {
-        return requestBody;
+        this.fullRequest = Arrays.asList(fullRequest.split("\r\n"));
     }
 
     public Request parseFullRequest() {
-        int indexOfBlankLine = request.indexOf("");
+        int indexOfBlankLine = fullRequest.indexOf("");
         parseRequestLine(0);
         parseHeaders(1, indexOfBlankLine);
         if (indexOfBlankLine != -1) {
@@ -47,18 +27,18 @@ public class Request {
     }
 
     private void parseRequestLine(int firstIndex) {
-        String[] requestLine = request.get(firstIndex).split(" ");
-        requestMethod = requestLine[0];
-        requestURI = requestLine[1];
-        requestVersion = requestLine[2];
+        String[] requestLine = fullRequest.get(firstIndex).split(" ");
+        method = requestLine[0];
+        path = requestLine[1];
+        version = requestLine[2];
     }
 
     private void parseHeaders(int start, int end) {
         for (int i = start; i < end; i++) {
-            String[] headerLine = request.get(i).split(" ");
+            String[] headerLine = fullRequest.get(i).split(" ");
             String key = headerLine[0];
             String value = headerLine[1];
-            requestHeaders.put(key, value);
+            headers.put(key, value);
         }
     }
 
@@ -71,21 +51,21 @@ public class Request {
     }
 
     private void parseURLEncodedData(int dataIndex) {
-        String[] data = request.get(dataIndex).split("&");
+        String[] data = fullRequest.get(dataIndex).split("&");
 
         for (String dataPoint : data) {
             String[] params = dataPoint.split("=");
             String key = params[0];
             String value = params[1];
-            requestBody.put(key, value);
+            body.put(key, value);
         }
     }
 
     private void parseBodyContent(int dataIndex) {
-        requestBody.put("Content", request.get(dataIndex));
+        body.put("Content", fullRequest.get(dataIndex));
     }
 
     private boolean isPatch() {
-        return requestMethod.equals("PATCH");
+        return method.equals("PATCH");
     }
 }

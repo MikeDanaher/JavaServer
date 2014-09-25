@@ -37,17 +37,17 @@ public class RequestTest {
 
     @Test
     public void testGetMethod() {
-        assertEquals(POSTRequest.getMethod(), "POST");
+        assertEquals(POSTRequest.method, "POST");
     }
 
     @Test
     public void testGetURI() {
-        assertEquals(POSTRequest.getURI(), "/test");
+        assertEquals(POSTRequest.path, "/test");
     }
 
     @Test
     public void testGetVersion() {
-        assertEquals(POSTRequest.getVersion(), "HTTP/1.1");
+        assertEquals(POSTRequest.version, "HTTP/1.1");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class RequestTest {
         headers.put("Host:", "localhost:5000");
         headers.put("Connection:", "keep-alive");
         headers.put("Content-Type:", "application/x-www-form-urlencoded");
-        assertEquals(POSTRequest.getHeaders(), headers);
+        assertEquals(POSTRequest.headers, headers);
     }
 
     @Test
@@ -64,14 +64,14 @@ public class RequestTest {
         HashMap<String, String> body = new HashMap<>();
         body.put("name", "Test");
         body.put("email", "test@example.com");
-        assertEquals(POSTRequest.getBody(), body);
+        assertEquals(POSTRequest.body, body);
     }
 
     @Test
     public void testEmptyBody() {
         GETRequest = new Request(GET_REQUEST).parseFullRequest();
         HashMap<String, String> body = new HashMap<>();
-        assertEquals(GETRequest.getBody(), body);
+        assertEquals(GETRequest.body, body);
     }
 
     @Test
@@ -79,6 +79,6 @@ public class RequestTest {
         PATCHRequest = new Request(PATCH_REQUEST).parseFullRequest();
         HashMap<String, String> body = new HashMap<>();
         body.put("Content", "This is some new content");
-        assertEquals(PATCHRequest.getBody(), body);
+        assertEquals(PATCHRequest.body, body);
     }
 }
