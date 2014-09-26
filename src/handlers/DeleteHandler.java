@@ -5,9 +5,9 @@ import response.Response;
 import response.ResponseBuilder;
 import routes.Route;
 import routes.Routes;
+import utilities.FileHandler;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Map;
 
 public class DeleteHandler implements Handler {
@@ -37,7 +37,7 @@ public class DeleteHandler implements Handler {
             builder.buildMethodNotAllowedResponse();
         } else {
             try {
-                Files.delete(requestedRoute.absolutePath);
+                FileHandler.delete(requestedRoute.absolutePath);
                 builder.buildOKResponse();
             } catch (IOException e) {
                 builder.buildNotFoundResponse();

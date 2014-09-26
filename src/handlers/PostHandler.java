@@ -8,7 +8,6 @@ import routes.Routes;
 import utilities.FileHandler;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 public class PostHandler implements Handler {
@@ -38,25 +37,12 @@ public class PostHandler implements Handler {
             builder.buildMethodNotAllowedResponse();
         } else {
             try {
-                String content = buildPostContent();
+                String content = request.formatBodyData();
                 FileHandler.writeOver(requestedRoute.absolutePath, content.getBytes());
                 builder.buildOKResponse();
             } catch (IOException e) {
                 builder.buildMethodNotAllowedResponse();
             }
         }
-    }
-
-    private String buildPostContent() {
-        StringBuilder content = new StringBuilder();
-        Iterator it = request.body.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry) it.next();
-            content.append(pairs.getKey());
-            content.append(" = ");
-            content.append(pairs.getValue());
-            content.append("\r\n");
-        }
-        return content.toString();
     }
 }

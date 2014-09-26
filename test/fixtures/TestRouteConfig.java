@@ -26,7 +26,7 @@ public class TestRouteConfig {
         return new Route(name, baseDirectory, isReadOnly, isDirectory);
     }
 
-    private static Route logRoute(String directory) {
+    public static Route logRoute(String directory) {
         String name = "logs";
         String baseDirectory = directory;
         boolean isReadOnly = false;

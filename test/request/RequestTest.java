@@ -52,6 +52,11 @@ public class RequestTest {
     }
 
     @Test
+    public void testGetRequestLine() {
+        assertEquals(POSTRequest.requestLine, "POST /test HTTP/1.1");
+    }
+
+    @Test
     public void testGetHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Host", "localhost:5000");
@@ -66,6 +71,12 @@ public class RequestTest {
         body.put("name", "Test");
         body.put("email", "test@example.com");
         assertEquals(POSTRequest.body, body);
+    }
+
+    @Test
+    public void testGetPostFormattedData() {
+        String formattedData = "email = test@example.com\r\nname = Test\r\n";
+        assertEquals(POSTRequest.formatBodyData(), formattedData);
     }
 
     @Test

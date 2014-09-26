@@ -22,10 +22,11 @@ public class RequestParser {
     }
 
     private void parseRequestLine(int firstIndex) {
-        String[] requestLine = requestList.get(firstIndex).split(" ");
-        request.method = requestLine[0];
-        request.path = requestLine[1];
-        request.version = requestLine[2];
+        request.requestLine = requestList.get(firstIndex);
+        String[] parsedLine = request.requestLine.split(" ");
+        request.method = parsedLine[0];
+        request.path = parsedLine[1];
+        request.version = parsedLine[2];
     }
 
     private void parseHeaders(int start) {

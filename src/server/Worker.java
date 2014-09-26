@@ -15,11 +15,13 @@ public class Worker {
     private Socket client;
     private ServerIO io;
     private String baseDirectory;
+    private Routes routes;
 
     public Worker(Socket client, String directory) {
         this.client = client;
         this.baseDirectory = directory;
         this.io = new ServerIO();
+        this.routes = new Routes(baseDirectory, RouteConfig.getRoutes(baseDirectory));
     }
 
     public void handleRequest() {
@@ -38,7 +40,9 @@ public class Worker {
 
     private void respond(String requestContent) throws IOException {
         Request  request  = new RequestParser().parse(requestContent);
-        Routes   routes   = new Routes(baseDirectory, RouteConfig.getRoutes(baseDirectory));
+
+        Logger.log(request.requestLine, RouteConfig.logRoute(baseDirectory));
+
         Handler  handler  = new HandlerFactory(request, routes).build();
         Response response = handler.handle();
         io.writeResponse(response.getResponseAsBytes(), client.getOutputStream());
