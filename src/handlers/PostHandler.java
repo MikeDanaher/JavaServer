@@ -35,12 +35,16 @@ public class PostHandler implements Handler {
     }
 
     private void handleRequestedRoute() {
-        try {
-            String content = buildPostContent();
-            writeFile(content);
-            builder.buildOKResponse();
-        } catch (IOException e) {
+        if (requestedRoute.isReadOnly) {
             builder.buildMethodNotAllowedResponse();
+        } else {
+            try {
+                String content = buildPostContent();
+                writeFile(content);
+                builder.buildOKResponse();
+            } catch (IOException e) {
+                builder.buildMethodNotAllowedResponse();
+            }
         }
     }
 

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class GetHandlerTest {
 
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
-    private List<Route> routeConfig = TestRouteConfig.getRoutes();
+    private List<Route> routeConfig = TestRouteConfig.getRoutes(baseDirectory);
 
     private Response generateResponse(String requestString) throws IOException {
         Request  request  = new RequestParser().parse(requestString);
@@ -46,14 +46,14 @@ public class GetHandlerTest {
 
     @Test
     public void testHandleUnauthenticatedFileRequest() throws IOException {
-        Response response = generateResponse("GET /log HTTP/1.1");
+        Response response = generateResponse("GET /logs HTTP/1.1");
         assertEquals("401", response.statusCode);
     }
 
     @Test
     public void testHandleAuthenticatedFileRequest() throws IOException {
         String passphrase = Base64.encode("admin:hunter2".getBytes());
-        Response response = generateResponse("GET /log HTTP/1.1\r\nAuthorization: Basic " + passphrase + "\r\n\r\n");
+        Response response = generateResponse("GET /logs HTTP/1.1\r\nAuthorization: Basic " + passphrase + "\r\n\r\n");
         assertEquals("200", response.statusCode);
     }
 }

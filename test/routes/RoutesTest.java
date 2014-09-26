@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class RoutesTest {
 
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
-    private List<Route> routeConfig = TestRouteConfig.getRoutes();
+    private List<Route> routeConfig = TestRouteConfig.getRoutes(baseDirectory);
 
     @Test
     public void testDirectoryFileRoutes() throws IOException {
@@ -23,7 +23,6 @@ public class RoutesTest {
 
         assertTrue(validRoutes.containsKey("/file1"));
         assertEquals("file1", validRoutes.get("/file1").name);
-        assertEquals(Paths.get("/file1"), validRoutes.get("/file1").relativePath);
         assertEquals(Paths.get("/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures/file1"),
                 validRoutes.get("/file1").absolutePath);
     }
@@ -51,8 +50,8 @@ public class RoutesTest {
         Map<String, Route> validRoutes = new Routes(baseDirectory, routeConfig).getValidRoutes();
         String passphrase = Base64.encode("admin:hunter2".getBytes());
 
-        assertTrue(validRoutes.containsKey("/log"));
-        assertTrue(validRoutes.get("/log").authenticationRequired);
-        assertEquals(validRoutes.get("/log").authenticationString, passphrase);
+        assertTrue(validRoutes.containsKey("/logs"));
+        assertTrue(validRoutes.get("/logs").authenticationRequired);
+        assertEquals(validRoutes.get("/logs").authenticationString, passphrase);
     }
 }

@@ -33,11 +33,15 @@ public class DeleteHandler implements Handler {
     }
 
     private void handleRequestedRoute() {
-        try {
-            Files.delete(requestedRoute.absolutePath);
-            builder.buildOKResponse();
-        } catch (IOException e) {
-            builder.buildNotFoundResponse();
+        if (requestedRoute.isReadOnly) {
+            builder.buildMethodNotAllowedResponse();
+        } else {
+            try {
+                Files.delete(requestedRoute.absolutePath);
+                builder.buildOKResponse();
+            } catch (IOException e) {
+                builder.buildNotFoundResponse();
+            }
         }
     }
 }
