@@ -1,15 +1,19 @@
 package handlers;
 
-import server.Request;
+import request.Request;
+import response.Response;
+import response.ResponseBuilder;
+import routes.Routes;
 
 public class MethodNotAllowedHandler implements Handler {
-    private Request request;
+    private ResponseBuilder builder;
 
-    public MethodNotAllowedHandler(Request clientRequest) {
-        this.request = clientRequest;
+    public MethodNotAllowedHandler(Request clientRequest, Routes routes) {
+        this.builder = new ResponseBuilder();
     }
 
-    public Handler handle() {
-        return this;
+    public Response handle() {
+        builder.buildMethodNotAllowedResponse();
+        return builder.getResponse();
     }
 }

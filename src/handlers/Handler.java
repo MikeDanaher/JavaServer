@@ -1,7 +1,11 @@
 package handlers;
 
+import response.Response;
+
+import java.io.IOException;
+
 public interface Handler {
 
-    public Handler handle();
+    public Response handle() throws IOException;
 
 }

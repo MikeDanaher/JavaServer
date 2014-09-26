@@ -1,15 +1,32 @@
 package handlers;
 
-import server.Request;
+import request.Request;
+import response.Response;
+import response.ResponseBuilder;
+import routes.Route;
+import routes.Routes;
+
+import java.util.Map;
 
 public class HeadHandler implements Handler {
     private Request request;
+    private ResponseBuilder builder;
+    private Map<String, Route> validRoutes;
+    private Route requestedRoute;
 
-    public HeadHandler(Request clientRequest) {
+    public HeadHandler (Request clientRequest, Routes routes) {
         this.request = clientRequest;
+        this.validRoutes = routes.getValidRoutes();
+        this.builder = new ResponseBuilder();
     }
 
-    public Handler handle() {
-        return this;
+    public Response handle() {
+        requestedRoute = validRoutes.get(request.path);
+        if (requestedRoute != null) {
+            builder.buildOKResponse();
+        } else {
+            builder.buildNotFoundResponse();
+        }
+        return builder.getResponse();
     }
 }

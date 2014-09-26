@@ -1,15 +1,20 @@
 package handlers;
 
-import server.Request;
+import request.Request;
+import response.Response;
+import response.ResponseBuilder;
+import routes.Routes;
 
 public class OptionsHandler implements Handler {
-    private Request request;
+    private ResponseBuilder builder;
 
-    public OptionsHandler(Request clientRequest) {
-        this.request = clientRequest;
+    public OptionsHandler(Request clientRequest, Routes routes) {
+        this.builder = new ResponseBuilder();
     }
 
-    public Handler handle() {
-        return this;
+    public Response handle() {
+        builder.buildOKResponse();
+        builder.buildOptionsHeaders();
+        return builder.getResponse();
     }
 }
