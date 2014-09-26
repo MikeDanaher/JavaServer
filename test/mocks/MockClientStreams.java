@@ -1,4 +1,4 @@
-package server;
+package mocks;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

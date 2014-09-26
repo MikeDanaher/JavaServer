@@ -1,5 +1,13 @@
 package server;
 
+import handlers.Handler;
+import handlers.HandlerFactory;
+import request.Request;
+import request.RequestParser;
+import response.Response;
+import routes.RouteConfig;
+import routes.Routes;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -29,12 +37,14 @@ public class Worker {
     }
 
     private void respond(String requestContent) throws IOException {
-        Request request = new Request(requestContent).parseFullRequest();
-        Response response = new Response(request, baseDirectory).handleRequest();
-        io.writeResponse(response.buildResponse(), client.getOutputStream());
+        Request  request  = new RequestParser().parse(requestContent);
+        Routes   routes   = new Routes(baseDirectory, RouteConfig.getRoutes(baseDirectory));
+        Handler  handler  = new HandlerFactory(request, routes).build();
+        Response response = handler.handle();
+        io.writeResponse(response.getResponseAsBytes(), client.getOutputStream());
     }
 
     private boolean isValidRequest(String requestContent) {
-        return requestContent.equals("");
+        return !requestContent.equals("");
     }
 }

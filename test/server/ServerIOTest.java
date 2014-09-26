@@ -1,5 +1,6 @@
 package server;
 
+import mocks.MockClientStreams;
 import org.junit.Before;
 import org.junit.Test;
 
