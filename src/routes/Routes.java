@@ -1,7 +1,6 @@
 package routes;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,7 @@ public class Routes {
         this.routeConfig = config;
     }
 
-    public Map<String, Route> getValidRoutes() throws IOException {
+    public Map<String, Route> getValidRoutes() {
         buildRootRoute();
         buildFileRoutes();
         buildConfigRoutes();
@@ -30,10 +29,10 @@ public class Routes {
     }
 
     private void buildRootRoute() {
-        String path = "/";
-        boolean directory = true;
-        Route rootRoute = new Route(path, directory);
-        validRoutes.put(path, rootRoute);
+        String name = "/";
+        boolean isDirectory = true;
+        Route rootRoute = new Route(name, baseDirectory, isDirectory);
+        validRoutes.put(name, rootRoute);
     }
 
     private void buildConfigRoutes() {
@@ -56,9 +55,9 @@ public class Routes {
     }
 
     private Route buildFileRoute(File file) {
-        String path = "/" + file.getName();
-        boolean directory = false;
-        return new Route(path, directory);
+        String name = file.getName();
+        boolean isDirectory = false;
+        return new Route(name, baseDirectory, isDirectory);
     }
 
 }

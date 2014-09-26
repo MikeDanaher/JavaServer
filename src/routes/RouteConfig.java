@@ -7,27 +7,29 @@ import java.util.List;
 
 public class RouteConfig {
 
-    public static List<Route> getRoutes() {
+    public static List<Route> getRoutes(String directory) {
         List<Route> routes = new ArrayList<>();
 
-        routes.add(formRoute());
-        routes.add(logRoute());
+        routes.add(formRoute(directory));
+        routes.add(logRoute(directory));
 
         return routes;
     }
 
-    private static Route formRoute() {
+    private static Route formRoute(String directory) {
         String path = "/form";
+        String baseDirectory = directory;
         boolean isDirectory = false;
-        return new Route(path, isDirectory);
+        return new Route(path, baseDirectory, isDirectory);
     }
 
-    private static Route logRoute() {
-        String path = "/log";
+    private static Route logRoute(String directory) {
+        String path = "/logs";
+        String baseDirectory = directory;
         boolean isDirectory = false;
         boolean security = true;
         String passphrase = encodePassphrase("admin:hunter2");
-        return new Route(path, isDirectory, security, passphrase);
+        return new Route(path, baseDirectory, isDirectory, security, passphrase);
     }
 
     private static String encodePassphrase(String userPassword) {

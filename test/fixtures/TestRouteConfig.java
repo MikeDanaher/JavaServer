@@ -19,15 +19,17 @@ public class TestRouteConfig {
 
     private static Route formRoute() {
         String path = "/form";
+        String baseDirectory = "/";
         boolean isDirectory = false;
-        return new Route(path, isDirectory);
+        return new Route(path, baseDirectory, isDirectory);
     }
 
     private static Route logRoute() {
         String path = "/log";
+        String baseDirectory = "/";
         boolean isDirectory = false;
         boolean security = true;
         String passphrase = Base64.encode("admin:hunter2".getBytes());
-        return new Route(path, isDirectory, security, passphrase);
+        return new Route(path, baseDirectory, isDirectory, security, passphrase);
     }
 }

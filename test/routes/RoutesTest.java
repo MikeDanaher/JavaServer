@@ -3,8 +3,6 @@ package routes;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import fixtures.TestRouteConfig;
 import org.junit.Test;
-import routes.Route;
-import routes.Routes;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -12,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RoutesTest {
 
@@ -23,9 +22,10 @@ public class RoutesTest {
         Map<String, Route> validRoutes = new Routes(baseDirectory).getValidRoutes();
 
         assertTrue(validRoutes.containsKey("/file1"));
+        assertEquals("file1", validRoutes.get("/file1").name);
         assertEquals(Paths.get("/file1"), validRoutes.get("/file1").relativePath);
-        assertFalse(validRoutes.get("/file1").isDirectory);
-        assertFalse(validRoutes.get("/file1").authenticationRequired);
+        assertEquals(Paths.get("/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures/file1"),
+                validRoutes.get("/file1").absolutePath);
     }
 
     @Test
@@ -33,6 +33,8 @@ public class RoutesTest {
         Map<String, Route> validRoutes = new Routes(baseDirectory).getValidRoutes();
 
         assertTrue(validRoutes.containsKey("/"));
+        assertEquals(Paths.get("/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures/"),
+                validRoutes.get("/").absolutePath);
         assertTrue(validRoutes.get("/").isDirectory);
         assertFalse(validRoutes.get("/").authenticationRequired);
     }
