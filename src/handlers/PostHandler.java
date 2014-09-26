@@ -5,10 +5,9 @@ import response.Response;
 import response.ResponseBuilder;
 import routes.Route;
 import routes.Routes;
+import utilities.FileHandler;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class PostHandler implements Handler {
         } else {
             try {
                 String content = buildPostContent();
-                writeFile(content);
+                FileHandler.writeOver(requestedRoute.absolutePath, content.getBytes());
                 builder.buildOKResponse();
             } catch (IOException e) {
                 builder.buildMethodNotAllowedResponse();
@@ -59,13 +58,5 @@ public class PostHandler implements Handler {
             content.append("\r\n");
         }
         return content.toString();
-    }
-
-    private void writeFile(String content) throws IOException {
-        File file = new File(requestedRoute.absolutePath.toString());
-        file.createNewFile();
-        PrintWriter writer = new PrintWriter(file, "UTF-8");
-        writer.print(content);
-        writer.close();
     }
 }
