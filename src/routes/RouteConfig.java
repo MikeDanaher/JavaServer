@@ -12,24 +12,35 @@ public class RouteConfig {
 
         routes.add(formRoute(directory));
         routes.add(logRoute(directory));
+        routes.add(redirectRoute(directory));
 
         return routes;
     }
 
     private static Route formRoute(String directory) {
-        String path = "/form";
+        String name = "form";
         String baseDirectory = directory;
+        boolean isReadOnly = false;
         boolean isDirectory = false;
-        return new Route(path, baseDirectory, isDirectory);
+        return new Route(name, baseDirectory, isReadOnly, isDirectory);
     }
 
     private static Route logRoute(String directory) {
-        String path = "/logs";
+        String name = "logs";
         String baseDirectory = directory;
+        boolean isReadOnly = false;
         boolean isDirectory = false;
         boolean security = true;
         String passphrase = encodePassphrase("admin:hunter2");
-        return new Route(path, baseDirectory, isDirectory, security, passphrase);
+        return new Route(name, baseDirectory, isReadOnly, isDirectory, security, passphrase);
+    }
+
+    private static Route redirectRoute(String directory) {
+        String name = "redirect";
+        String baseDirectory = directory;
+        boolean isReadOnly = true;
+        boolean isDirectory = false;
+        return new Route(name, baseDirectory, isReadOnly, isDirectory);
     }
 
     private static String encodePassphrase(String userPassword) {

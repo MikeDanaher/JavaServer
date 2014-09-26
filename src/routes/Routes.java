@@ -31,14 +31,15 @@ public class Routes {
     private void buildRootRoute() {
         String name = "/";
         boolean isDirectory = true;
-        Route rootRoute = new Route(name, baseDirectory, isDirectory);
+        boolean isReadOnly = true;
+        Route rootRoute = new Route(name, baseDirectory, isReadOnly, isDirectory);
         validRoutes.put(name, rootRoute);
     }
 
     private void buildConfigRoutes() {
         if (!routeConfig.isEmpty()) {
             for (Route route : routeConfig) {
-                validRoutes.put(route.relativePath.toString(), route);
+                validRoutes.put("/" + route.name, route);
             }
         }
     }
@@ -56,8 +57,9 @@ public class Routes {
 
     private Route buildFileRoute(File file) {
         String name = file.getName();
+        boolean isReadOnly = true;
         boolean isDirectory = false;
-        return new Route(name, baseDirectory, isDirectory);
+        return new Route(name, baseDirectory, isReadOnly, isDirectory);
     }
 
 }
