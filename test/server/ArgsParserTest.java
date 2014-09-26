@@ -1,6 +1,8 @@
 package server;
 
 import org.junit.Test;
+import utilities.ArgsParser;
+
 import static org.junit.Assert.assertEquals;
 
 public class ArgsParserTest {

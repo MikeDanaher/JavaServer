@@ -5,8 +5,9 @@ import handlers.HandlerFactory;
 import request.Request;
 import request.RequestParser;
 import response.Response;
-import routes.RouteConfig;
+import routes.RoutesConfig;
 import routes.Routes;
+import utilities.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,7 +22,7 @@ public class Worker {
         this.client = client;
         this.baseDirectory = directory;
         this.io = new ServerIO();
-        this.routes = new Routes(baseDirectory, RouteConfig.getRoutes(baseDirectory));
+        this.routes = new Routes(baseDirectory, RoutesConfig.getRoutes(baseDirectory));
     }
 
     public void handleRequest() {
@@ -39,11 +40,11 @@ public class Worker {
     }
 
     private void respond(String requestContent) throws IOException {
-        Request  request  = new RequestParser().parse(requestContent);
+        Request request = new RequestParser().parse(requestContent);
 
-        Logger.log(request.requestLine, RouteConfig.logRoute(baseDirectory));
+        Logger.log(request.requestLine, RoutesConfig.logRoute(baseDirectory));
 
-        Handler  handler  = new HandlerFactory(request, routes).build();
+        Handler handler = new HandlerFactory(request, routes).build();
         Response response = handler.handle();
         io.writeResponse(response.getResponseAsBytes(), client.getOutputStream());
     }

@@ -1,6 +1,6 @@
 package handlers;
 
-import fixtures.TestRouteConfig;
+import fixtures.TestRoutesConfig;
 import org.junit.Test;
 import request.Request;
 import request.RequestParser;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class DeleteHandlerTest {
 
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
-    private List<Route> routeConfig = TestRouteConfig.getRoutes(baseDirectory);
+    private List<Route> routeConfig = TestRoutesConfig.getRoutes(baseDirectory);
 
     private Response generateResponse(String requestString) throws IOException {
         Request  request  = new RequestParser().parse(requestString);

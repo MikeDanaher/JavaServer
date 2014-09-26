@@ -1,10 +1,11 @@
 package server;
 
-import fixtures.TestRouteConfig;
+import fixtures.TestRoutesConfig;
 import org.junit.After;
 import org.junit.Test;
 import routes.Route;
 import utilities.FileHandler;
+import utilities.Logger;
 
 import java.io.IOException;
 
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertThat;
 public class LoggerTest {
 
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
-    private Route logRoute = TestRouteConfig.logRoute(baseDirectory);
+    private Route logRoute = TestRoutesConfig.logRoute(baseDirectory);
 
     @After
     public void cleanUpLogs() throws IOException {

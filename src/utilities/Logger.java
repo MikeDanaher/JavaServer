@@ -1,4 +1,4 @@
-package server;
+package utilities;
 
 import routes.Route;
 import utilities.FileHandler;

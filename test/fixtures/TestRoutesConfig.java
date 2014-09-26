@@ -1,11 +1,12 @@
-package routes;
+package fixtures;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import routes.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouteConfig {
+public class TestRoutesConfig {
 
     public static List<Route> getRoutes(String directory) {
         List<Route> routes = new ArrayList<>();
