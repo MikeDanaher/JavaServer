@@ -1,11 +1,9 @@
-package server;
+package utilities;
 
 import fixtures.TestRoutesConfig;
 import org.junit.After;
 import org.junit.Test;
 import routes.Route;
-import utilities.FileHandler;
-import utilities.Logger;
 
 import java.io.IOException;
 

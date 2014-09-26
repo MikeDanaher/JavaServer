@@ -1,4 +1,4 @@
-package server;
+package utilities;
 
 import org.junit.Test;
 import utilities.ArgsParser;

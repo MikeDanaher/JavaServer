@@ -5,10 +5,10 @@ import response.Response;
 import response.ResponseBuilder;
 import routes.Route;
 import routes.Routes;
+import utilities.FileHandler;
+import utilities.IndexGenerator;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class GetHandler implements Handler {
     }
 
     public void handleDirectoryRoute() {
-        byte[] body = generateIndex();
+        byte[] body = IndexGenerator.generate(requestedRoute.absolutePath);
         builder.buildResponseBody(body);
         builder.buildOKResponse();
     }
@@ -72,37 +72,10 @@ public class GetHandler implements Handler {
         builder.buildOKResponse();
     }
 
-    private byte[] generateIndex() {
-        StringBuilder body = new StringBuilder();
-        File directory = new File(requestedRoute.absolutePath.toString());
-        File[] files = directory.listFiles();
-
-        if (files.length != 0) {
-            for (File file : files) {
-                if (isValidFile(file)) {
-                    body.append(createHTMLLink(file.getName()));
-                }
-            }
-        }
-
-        return body.toString().getBytes();
-    }
-
-    private boolean isValidFile(File file) {
-        return !file.getName().startsWith(".");
-    }
-
-    private String createHTMLLink(String fileName) {
-        String href = "<p><a href=/";
-        String closeHref = ">";
-        String closeTag = "</a></p>";
-        return href + fileName + closeHref + fileName + closeTag;
-    }
-
     private byte[] readFile(Path file) {
         byte[] contents = new byte[0];
         try {
-            contents = Files.readAllBytes(file);
+            contents = FileHandler.read(file);
         } catch (IOException e) {
             contents = "".getBytes();
         }
