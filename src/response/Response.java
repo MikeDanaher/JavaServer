@@ -3,6 +3,7 @@ package response;
 import java.util.HashMap;
 
 public class Response {
+    public final String            version = "HTTP/1.1";
     public String                  statusCode;
     public HashMap<String, String> headers = new HashMap<>();
     public byte[]                  body = new byte[0];

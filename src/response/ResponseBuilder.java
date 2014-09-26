@@ -17,21 +17,17 @@ public class ResponseBuilder {
         response.statusCode = "200";
     }
 
-    public void buildMethodNotAllowedResponse() {
-        response.statusCode = "405";
-    }
-
     public void buildOptionsHeaders() {
         response.setHeader("Allow", "GET,HEAD,POST,OPTIONS,PATCH,PUT");
+    }
+
+    public void buildMethodNotAllowedResponse() {
+        response.statusCode = "405";
     }
 
     public void buildNotFoundResponse() {
         response.statusCode = "404";
         response.body = "404 Page Not Found".getBytes();
-    }
-
-    public void buildResponseBody(byte[] body) {
-        response.body = body;
     }
 
     public void buildAuthenticationRequiredResponse() {
@@ -40,17 +36,26 @@ public class ResponseBuilder {
         response.body = "Authentication required".getBytes();
     }
 
+    public void buildResponseBody(byte[] body) {
+        response.body = body;
+    }
+
     public Response getResponse() {
         buildResponseHead();
         return response;
     }
 
-    private String buildStatusLine() {
-        return "HTTP/1.1 " + response.statusCode + " " + STATUS_MESSAGES.get(response.statusCode);
-    }
-
     private void buildResponseHead() {
         String statusLine = buildStatusLine();
+        String headersString = buildHeaders();
+        response.responseHead = (statusLine + "\r\n" + headersString + "\r\n").getBytes();
+    }
+
+    private String buildStatusLine() {
+        return response.version + " " + response.statusCode + " " + STATUS_MESSAGES.get(response.statusCode);
+    }
+
+    private String buildHeaders() {
         StringBuilder headersString = new StringBuilder();
         Iterator it = response.headers.entrySet().iterator();
         while (it.hasNext()) {
@@ -60,7 +65,7 @@ public class ResponseBuilder {
             headersString.append(pairs.getValue());
             headersString.append("\r\n");
         }
-        response.responseHead = (statusLine + "\r\n" + headersString.toString() + "\r\n").getBytes();
+        return headersString.toString();
     }
 
     private static Map<String, String> createStatusMessages() {
