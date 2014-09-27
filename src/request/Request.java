@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Request {
+    public String                  type;
     public String                  method;
     public String                  path;
     public String                  version;
