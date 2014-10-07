@@ -4,17 +4,18 @@ import request.Request;
 import response.Response;
 import response.ResponseBuilder;
 
-public class HeadHandler implements Handler {
-    private Request request;
+public class RedirectHandler implements Handler {
     private ResponseBuilder builder;
+    private Request request;
 
-    public HeadHandler (Request clientRequest) {
+    public RedirectHandler(Request clientRequest) {
         this.request = clientRequest;
         this.builder = new ResponseBuilder();
     }
 
     public Response handle() {
-        builder.buildOKResponse();
+        String host = request.getHeaders().get("Host");
+        builder.buildRedirectResponse(host, request.getRedirectPath());
         return builder.getResponse();
     }
 }

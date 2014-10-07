@@ -4,17 +4,15 @@ import request.Request;
 import response.Response;
 import response.ResponseBuilder;
 
-public class HeadHandler implements Handler {
-    private Request request;
+public class NotAllowedHandler implements Handler {
     private ResponseBuilder builder;
 
-    public HeadHandler (Request clientRequest) {
-        this.request = clientRequest;
+    public NotAllowedHandler(Request clientRequest) {
         this.builder = new ResponseBuilder();
     }
 
     public Response handle() {
-        builder.buildOKResponse();
+        builder.buildMethodNotAllowedResponse();
         return builder.getResponse();
     }
 }

@@ -1,5 +1,6 @@
 package handlers;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import fixtures.TestRoutesConfig;
 import org.junit.Test;
 import request.Request;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class DeleteHandlerTest {
+public class AuthorizedHandlerTest {
 
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
     private List<Route> routeConfig = TestRoutesConfig.getRoutes(baseDirectory);
@@ -26,21 +27,15 @@ public class DeleteHandlerTest {
     }
 
     @Test
-    public void testHandleInvalidDeleteRequest() throws IOException {
-        Response response = generateResponse("DELETE / HTTP/1.1");
-        assertEquals("405", response.statusCode);
+    public void testHandleUnauthenticatedFileRequest() throws IOException {
+        Response response = generateResponse("GET /logs HTTP/1.1");
+        assertEquals("401", response.statusCode);
     }
 
     @Test
-    public void testHandleValidDeleteRequest() throws IOException {
-        Response response = generateResponse("POST /form HTTP/1.1\r\n\r\ndata=test");
+    public void testHandleAuthenticatedFileRequest() throws IOException {
+        String passphrase = Base64.encode("admin:hunter2".getBytes());
+        Response response = generateResponse("GET /logs HTTP/1.1\r\nAuthorization: Basic " + passphrase + "\r\n\r\n");
         assertEquals("200", response.statusCode);
-        Response response2 = generateResponse("DELETE /form HTTP/1.1");
-        assertEquals("200", response2.statusCode);
-        Response response3 = generateResponse("GET /form HTTP/1.1");
-        String bodyContent = new String(response3.body, "UTF-8");
-        assertEquals("", bodyContent);
-
     }
-
 }

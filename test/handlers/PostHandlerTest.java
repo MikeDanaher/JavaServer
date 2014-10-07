@@ -4,7 +4,7 @@ import fixtures.TestRoutesConfig;
 import org.junit.After;
 import org.junit.Test;
 import request.Request;
-import request.RequestParser;
+import request.RequestBuilder;
 import response.Response;
 import routes.Route;
 import routes.Routes;
@@ -19,10 +19,10 @@ public class PostHandlerTest {
     private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
     private List<Route> routeConfig = TestRoutesConfig.getRoutes(baseDirectory);
 
-    private Response generateResponse(String requestString) throws IOException {
-        Request  request  = new RequestParser().parse(requestString);
+    private Response generateResponse(String requestContent) throws IOException {
         Routes   routes   = new Routes(baseDirectory, routeConfig);
-        Handler  handler  = new HandlerFactory(request, routes).build();
+        Request  request  = new RequestBuilder(requestContent, routes).build();
+        Handler  handler  = new HandlerFactory().build(request);
         return handler.handle();
     }
 

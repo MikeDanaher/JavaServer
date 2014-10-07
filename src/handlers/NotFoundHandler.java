@@ -3,17 +3,16 @@ package handlers;
 import request.Request;
 import response.Response;
 import response.ResponseBuilder;
-import routes.Routes;
 
-public class MethodNotAllowedHandler implements Handler {
+public class NotFoundHandler implements Handler {
     private ResponseBuilder builder;
 
-    public MethodNotAllowedHandler(Request clientRequest, Routes routes) {
+    public NotFoundHandler(Request clientRequest) {
         this.builder = new ResponseBuilder();
     }
 
     public Response handle() {
-        builder.buildMethodNotAllowedResponse();
+        builder.buildNotFoundResponse();
         return builder.getResponse();
     }
 }

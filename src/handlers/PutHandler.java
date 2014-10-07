@@ -3,46 +3,31 @@ package handlers;
 import request.Request;
 import response.Response;
 import response.ResponseBuilder;
-import routes.Route;
-import routes.Routes;
 import utilities.FileHandler;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class PutHandler implements Handler {
     private Request request;
     private ResponseBuilder builder;
-    private Map<String, Route> validRoutes;
-    private Route requestedRoute;
 
-    public PutHandler(Request clientRequest, Routes routes) {
+    public PutHandler(Request clientRequest) {
         this.request = clientRequest;
-        this.validRoutes = routes.getValidRoutes();
         this.builder = new ResponseBuilder();
     }
 
     public Response handle() {
-        requestedRoute = validRoutes.get(request.path);
-        if (requestedRoute != null) {
-            handleRequestedRoute();
-        } else {
-            builder.buildNotFoundResponse();
-        }
-        return builder.getResponse();
-    }
-
-    private void handleRequestedRoute() {
-        if(requestedRoute.isReadOnly) {
+        if(request.getIsReadOnly()) {
             builder.buildMethodNotAllowedResponse();
         } else {
             try {
-                String content = request.formatBodyData();
-                FileHandler.writeOver(requestedRoute.absolutePath, content.getBytes());
+                String content = request.getBody();
+                FileHandler.writeOver(request.getAbsolutePath(), content.getBytes());
                 builder.buildOKResponse();
             } catch (IOException e) {
                 builder.buildMethodNotAllowedResponse();
             }
         }
+        return builder.getResponse();
     }
 }
