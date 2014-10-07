@@ -12,7 +12,7 @@ import utilities.Logger;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Worker {
+public class Worker implements Runnable {
     private Socket client;
     private ServerIO io;
     private String baseDirectory;
@@ -26,7 +26,7 @@ public class Worker {
         this.routes = new Routes(baseDirectory, RoutesConfig.getRoutes(baseDirectory));
     }
 
-    public void handleRequest() {
+    public void run() {
         try {
             getRequest();
             logRequest();
