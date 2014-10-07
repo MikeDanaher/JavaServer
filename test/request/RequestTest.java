@@ -1,31 +1,42 @@
 package request;
 
+import fixtures.TestRoutesConfig;
 import org.junit.Before;
 import org.junit.Test;
+import routes.Route;
+import routes.Routes;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class RequestTest {
 
-    private Request POSTRequest;
-    private String POST_URLENCODED = "POST /test HTTP/1.1\r\n" +
+    private String baseDirectory = "/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures";
+    private List<Route> routeConfig = TestRoutesConfig.getRoutes(baseDirectory);
+    private Routes routes = new Routes(baseDirectory, routeConfig);
+    private Request PostRequest;
+
+    private String POST_URLENCODED = "POST /form HTTP/1.1\r\n" +
                                      "Host: localhost:5000\r\n" +
                                      "Connection: keep-alive\r\n" +
                                      "Content-Type: application/x-www-form-urlencoded\r\n" +
                                      "\r\n" +
                                      "name=Test&email=test@example.com";
 
-    private String PATCH_REQUEST = "PATCH /test.txt HTTP/1.1\r\n" +
+    private String PATCH_REQUEST = "PATCH /form HTTP/1.1\r\n" +
                                    "Host: localhost:5000\r\n" +
                                    "Connection: keep-alive\r\n" +
                                    "Content-Type: application/x-www-form-urlencoded\r\n" +
                                    "\r\n" +
                                    "This is some new content";
 
-    private String GET_REQUEST = "POST /test HTTP/1.1\r\n" +
+    private String GET_REQUEST = "GET /logs HTTP/1.1\r\n" +
                                  "Host: localhost:5000\r\n" +
                                  "Connection: keep-alive\r\n" +
                                  "Content-Type: text/html\r\n" +
@@ -33,27 +44,58 @@ public class RequestTest {
 
     @Before
     public void createRequest() {
-        POSTRequest = new RequestParser().parse(POST_URLENCODED);
+        PostRequest = new RequestBuilder(POST_URLENCODED, routes).build();
+    }
+
+    @Test
+    public void testGetType() {
+        assertEquals("Post", PostRequest.getType());
     }
 
     @Test
     public void testGetMethod() {
-        assertEquals(POSTRequest.method, "POST");
+        assertEquals("POST", PostRequest.getMethod());
     }
 
     @Test
-    public void testGetURI() {
-        assertEquals(POSTRequest.path, "/test");
+    public void testGetPath() {
+        assertEquals("/form", PostRequest.getPath());
     }
 
     @Test
     public void testGetVersion() {
-        assertEquals(POSTRequest.version, "HTTP/1.1");
+        assertEquals("HTTP/1.1", PostRequest.getVersion());
     }
 
     @Test
     public void testGetRequestLine() {
-        assertEquals(POSTRequest.requestLine, "POST /test HTTP/1.1");
+        assertEquals("POST /form HTTP/1.1", PostRequest.getRequestLine());
+    }
+
+    @Test
+    public void testGetAbsolutePath() {
+        Path absolutePath = Paths.get(baseDirectory + "/form");
+        assertEquals(absolutePath, PostRequest.getAbsolutePath());
+    }
+
+    @Test
+    public void testGetPassPhrase() {
+        Request GetRequest = new RequestBuilder(GET_REQUEST, routes).build();
+        assertEquals("YWRtaW46aHVudGVyMg==", GetRequest.getPassPhrase());
+    }
+
+    @Test
+    public void testGetRedirectPath() {
+        String REDIRECT_REQUEST = "GET /redirect HTTP/1.1";
+        Request GetRequest = new RequestBuilder(REDIRECT_REQUEST, routes).build();
+        assertEquals("/", GetRequest.getRedirectPath());
+    }
+
+    @Test
+    public void testGetReadOnly() {
+        String REDIRECT_REQUEST = "GET /redirect HTTP/1.1";
+        Request GetRequest = new RequestBuilder(REDIRECT_REQUEST, routes).build();
+        assertTrue(GetRequest.getIsReadOnly());
     }
 
     @Test
@@ -62,35 +104,25 @@ public class RequestTest {
         headers.put("Host", "localhost:5000");
         headers.put("Connection", "keep-alive");
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        assertEquals(POSTRequest.headers, headers);
-    }
-
-    @Test
-    public void testGetPostData() {
-        HashMap<String, String> body = new HashMap<>();
-        body.put("name", "Test");
-        body.put("email", "test@example.com");
-        assertEquals(POSTRequest.body, body);
+        assertEquals(headers, PostRequest.getHeaders());
     }
 
     @Test
     public void testGetPostFormattedData() {
-        String formattedData = "email = test@example.com\r\nname = Test\r\n";
-        assertEquals(POSTRequest.formatBodyData(), formattedData);
+        String body = "email = test@example.com\r\nname = Test\r\n";
+        assertEquals(body, PostRequest.getBody());
     }
 
     @Test
     public void testEmptyBody() {
-        Request GETRequest = new RequestParser().parse(GET_REQUEST);
-        HashMap<String, String> body = new HashMap<>();
-        assertEquals(GETRequest.body, body);
+        Request GetRequest = new RequestBuilder(GET_REQUEST, routes).build();
+        assertEquals("", GetRequest.getBody());
     }
 
     @Test
     public void testGetPatchContent() {
-        Request PATCHRequest = new RequestParser().parse(PATCH_REQUEST);
-        HashMap<String, String> body = new HashMap<>();
-        body.put("Content", "This is some new content");
-        assertEquals(PATCHRequest.body, body);
+        Request PatchRequest = new RequestBuilder(PATCH_REQUEST, routes).build();
+        String body = "Content = This is some new content\r\n";
+        assertEquals(body, PatchRequest.getBody());
     }
 }

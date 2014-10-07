@@ -22,11 +22,11 @@ public class RequestParser {
     }
 
     private void parseRequestLine(int firstIndex) {
-        request.requestLine = requestList.get(firstIndex);
-        String[] parsedLine = request.requestLine.split(" ");
-        request.method = parsedLine[0];
-        request.path = parsedLine[1];
-        request.version = parsedLine[2];
+        request.setRequestLine(requestList.get(firstIndex));
+        String[] parsedLine = request.getRequestLine().split(" ");
+        request.setMethod(parsedLine[0]);
+        request.setPath(parsedLine[1]);
+        request.setVersion(parsedLine[2]);
     }
 
     private void parseHeaders(int start) {
@@ -37,7 +37,7 @@ public class RequestParser {
             String[] headerLine = requestList.get(i).split(": ");
             String key = headerLine[0];
             String value = headerLine[1];
-            request.headers.put(key, value);
+            request.setHeader(key, value);
         }
     }
 
@@ -56,12 +56,12 @@ public class RequestParser {
             String[] params = dataPoint.split("=");
             String key = params[0];
             String value = params[1];
-            request.body.put(key, value);
+            request.setBody(key, value);
         }
     }
 
     private void parseBodyContent(int dataIndex) {
-        request.body.put("Content", requestList.get(dataIndex));
+        request.setBody("Content", requestList.get(dataIndex));
     }
 
     private boolean requestHasData() {
@@ -69,6 +69,6 @@ public class RequestParser {
     }
 
     private boolean isPatch() {
-        return request.method.equals("PATCH");
+        return request.getMethod().equals("PATCH");
     }
 }
