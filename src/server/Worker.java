@@ -3,10 +3,10 @@ package server;
 import handlers.Handler;
 import handlers.HandlerFactory;
 import request.Request;
-import request.RequestParser;
+import request.RequestBuilder;
 import response.Response;
-import routes.RoutesConfig;
 import routes.Routes;
+import routes.RoutesConfig;
 import utilities.Logger;
 
 import java.io.IOException;
@@ -17,6 +17,7 @@ public class Worker {
     private ServerIO io;
     private String baseDirectory;
     private Routes routes;
+    private Request request;
 
     public Worker(Socket client, String directory) {
         this.client = client;
@@ -27,29 +28,27 @@ public class Worker {
 
     public void handleRequest() {
         try {
-            String requestContent = io.readRequest(client.getInputStream());
-
-            if(isValidRequest(requestContent)) {
-                respond(requestContent);
-            }
-
+            getRequest();
+            logRequest();
+            respond();
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void respond(String requestContent) throws IOException {
-        Request request = new RequestParser().parse(requestContent);
-
-        Logger.log(request.requestLine, RoutesConfig.logRoute(baseDirectory));
-
-        Handler handler = new HandlerFactory(request, routes).build();
-        Response response = handler.handle();
-        io.writeResponse(response.getResponseAsBytes(), client.getOutputStream());
+    private void getRequest() throws IOException {
+        String requestContent = io.readRequest(client.getInputStream());
+        request = new RequestBuilder(requestContent, routes).build();
     }
 
-    private boolean isValidRequest(String requestContent) {
-        return !requestContent.equals("");
+    private void logRequest() throws IOException {
+        Logger.log(request.getRequestLine(), RoutesConfig.logRoute(baseDirectory));
+    }
+
+    private void respond() throws IOException {
+        Handler handler = new HandlerFactory().build(request);
+        Response response = handler.handle();
+        io.writeResponse(response.getResponseAsBytes(), client.getOutputStream());
     }
 }

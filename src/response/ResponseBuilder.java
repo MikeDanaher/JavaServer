@@ -36,6 +36,11 @@ public class ResponseBuilder {
         response.body = "Authentication required".getBytes();
     }
 
+    public void buildRedirectResponse(String host, String redirectPath) {
+        response.statusCode = "307";
+        response.setHeader("Location", "HTTP://" + host + redirectPath);
+    }
+
     public void buildResponseBody(byte[] body) {
         response.body = body;
     }
