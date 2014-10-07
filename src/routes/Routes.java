@@ -30,9 +30,9 @@ public class Routes {
 
     private void buildRootRoute() {
         String name = "/";
-        boolean isDirectory = true;
+        String redirect = "";
         boolean isReadOnly = true;
-        Route rootRoute = new Route(name, baseDirectory, isReadOnly, isDirectory);
+        Route rootRoute = new Route(name, baseDirectory, redirect, isReadOnly);
         validRoutes.put(name, rootRoute);
     }
 
@@ -57,9 +57,9 @@ public class Routes {
 
     private Route buildFileRoute(File file) {
         String name = file.getName();
+        String redirect = "";
         boolean isReadOnly = true;
-        boolean isDirectory = false;
-        return new Route(name, baseDirectory, isReadOnly, isDirectory);
+        return new Route(name, baseDirectory, redirect, isReadOnly);
     }
 
 }

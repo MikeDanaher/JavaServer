@@ -13,6 +13,7 @@ public class RoutesConfig {
         routes.add(formRoute(directory));
         routes.add(logRoute(directory));
         routes.add(redirectRoute(directory));
+        routes.add(optionsRoute(directory));
 
         return routes;
     }
@@ -20,27 +21,35 @@ public class RoutesConfig {
     private static Route formRoute(String directory) {
         String name = "form";
         String baseDirectory = directory;
+        String redirect = "";
         boolean isReadOnly = false;
-        boolean isDirectory = false;
-        return new Route(name, baseDirectory, isReadOnly, isDirectory);
+        return new Route(name, baseDirectory, redirect, isReadOnly);
     }
 
     public static Route logRoute(String directory) {
         String name = "logs";
         String baseDirectory = directory;
+        String redirect = "";
         boolean isReadOnly = false;
-        boolean isDirectory = false;
         boolean security = true;
         String passphrase = encodePassphrase("admin:hunter2");
-        return new Route(name, baseDirectory, isReadOnly, isDirectory, security, passphrase);
+        return new Route(name, baseDirectory, redirect, isReadOnly, security, passphrase);
     }
 
     private static Route redirectRoute(String directory) {
         String name = "redirect";
         String baseDirectory = directory;
+        String redirect = "/";
         boolean isReadOnly = true;
-        boolean isDirectory = false;
-        return new Route(name, baseDirectory, isReadOnly, isDirectory);
+        return new Route(name, baseDirectory, redirect, isReadOnly);
+    }
+
+    private static Route optionsRoute(String directory) {
+        String name = "method_options";
+        String baseDirectory = directory;
+        String redirect = "";
+        boolean isReadOnly = true;
+        return new Route(name, baseDirectory, redirect, isReadOnly);
     }
 
     private static String encodePassphrase(String userPassword) {

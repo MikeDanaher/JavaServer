@@ -34,7 +34,6 @@ public class RoutesTest {
         assertTrue(validRoutes.containsKey("/"));
         assertEquals(Paths.get("/Users/mikedanaher/Dev/8thLight/JavaServer/test/fixtures/"),
                 validRoutes.get("/").absolutePath);
-        assertTrue(validRoutes.get("/").isDirectory);
         assertFalse(validRoutes.get("/").authenticationRequired);
     }
 
