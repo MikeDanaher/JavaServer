@@ -8,7 +8,6 @@ import utilities.IndexGenerator;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class GetHandler implements Handler {
     private Request request;
@@ -39,18 +38,24 @@ public class GetHandler implements Handler {
     }
 
     private void handleRoute() {
-        byte[] body = readFile(request.getAbsolutePath());
-        builder.buildResponseBody(body);
-        builder.buildOKResponse();
+        byte[] body;
+        try {
+            if (isPartialRequest()) {
+                body = FileHandler.readPartial(request.getAbsolutePath(), request.getHeaders().get("Range"));
+                builder.buildPartialResponse();
+            } else {
+                body = FileHandler.read(request.getAbsolutePath());
+                builder.buildOKResponse();
+            }
+            builder.buildResponseBody(body);
+        } catch (IOException e) {
+            body = new byte[0];
+            builder.buildOKResponse();
+            builder.buildResponseBody(body);
+        }
     }
 
-    private byte[] readFile(Path file) {
-        byte[] contents;
-        try {
-            contents = FileHandler.read(file);
-        } catch (IOException e) {
-            contents = "".getBytes();
-        }
-        return contents;
+    private boolean isPartialRequest() {
+        return request.getHeaders().containsKey("Range");
     }
 }

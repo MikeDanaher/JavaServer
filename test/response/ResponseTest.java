@@ -37,6 +37,8 @@ public class ResponseTest {
     public void testOptionHeader() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Allow", "GET,HEAD,POST,OPTIONS,PATCH,PUT");
+        headers.put("Accept-Ranges", "bytes");
+        headers.put("Content-Length", "0");
 
         builder.buildOptionsHeaders();
         response = builder.getResponse();
@@ -57,6 +59,6 @@ public class ResponseTest {
         builder.buildOKResponse();
         response = builder.getResponse();
         String responseText = new String(response.responseHead, "UTF-8");
-        assertEquals("HTTP/1.1 200 OK\r\n\r\n", responseText);
+        assertEquals("HTTP/1.1 200 OK\r\nContent-Length: 0\r\nAccept-Ranges: bytes\r\n\r\n", responseText);
     }
 }

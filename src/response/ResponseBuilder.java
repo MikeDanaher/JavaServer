@@ -8,6 +8,7 @@ import java.util.Map;
 public class ResponseBuilder {
     private Response response;
     private final Map<String, String> STATUS_MESSAGES = createStatusMessages();
+    private final String NEWLINE = "\r\n";
 
     public ResponseBuilder() {
         this.response = new Response();
@@ -28,6 +29,10 @@ public class ResponseBuilder {
     public void buildNotFoundResponse() {
         response.statusCode = "404";
         response.body = "404 Page Not Found".getBytes();
+    }
+
+    public void buildPartialResponse() {
+        response.statusCode = "206";
     }
 
     public void buildAuthenticationRequiredResponse() {
@@ -51,13 +56,23 @@ public class ResponseBuilder {
     }
 
     private void buildResponseHead() {
+        setDefaultHeaders();
         String statusLine = buildStatusLine();
         String headersString = buildHeaders();
-        response.responseHead = (statusLine + "\r\n" + headersString + "\r\n").getBytes();
+        response.responseHead = (statusLine + NEWLINE + headersString + NEWLINE).getBytes();
     }
 
     private String buildStatusLine() {
         return response.version + " " + response.statusCode + " " + STATUS_MESSAGES.get(response.statusCode);
+    }
+
+    private void setDefaultHeaders() {
+        response.setHeader("Accept-Ranges", "bytes");
+        response.setHeader("Content-Length", getContentLength());
+    }
+
+    private String getContentLength() {
+        return Integer.toString(response.body.length);
     }
 
     private String buildHeaders() {
@@ -68,7 +83,7 @@ public class ResponseBuilder {
             headersString.append(pairs.getKey());
             headersString.append(": ");
             headersString.append(pairs.getValue());
-            headersString.append("\r\n");
+            headersString.append(NEWLINE);
         }
         return headersString.toString();
     }
@@ -76,6 +91,7 @@ public class ResponseBuilder {
     private static Map<String, String> createStatusMessages() {
         Map<String, String> messages = new HashMap<>();
         messages.put("200", "OK");
+        messages.put("206", "Partial Content");
         messages.put("401", "Unauthorized");
         messages.put("404", "Not Found");
         messages.put("405", "Method Not Allowed");

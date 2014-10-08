@@ -43,4 +43,13 @@ public class GetHandlerTest {
         assertEquals("404", response.statusCode);
     }
 
+    @Test
+    public void testHandlePartialRequest() throws IOException {
+        Response response = generateResponse("GET /partial_content.txt HTTP/1.1\r\nRange: bytes=0-4");
+        String content = new String(response.body, "UTF-8");
+
+        assertEquals("206", response.statusCode);
+        assertEquals("This", content);
+    }
+
 }
